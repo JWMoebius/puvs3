@@ -63,9 +63,9 @@ int main(int argc, char *argv[])
     }
 
     /* read user input */
-    d1 = 4;		// rows of A and C
-    d2 = 4;     // cols of A and rows of B
-    d3 = 4;     // cols of B and C
+    d1 = 1000;		// rows of A and C
+    d2 = 1000;     // cols of A and rows of B
+    d3 = 1000;     // cols of B and C
 
     printf("Matrix sizes C[%d][%d] = A[%d][%d] x B[%d][%d]\n", d1, d3, d1, d2, d2, d3);
 
@@ -75,14 +75,21 @@ int main(int argc, char *argv[])
     B = alloc_mat(d2, d3);
     init_mat(B, d2, d3);
     C = alloc_mat(d1, d3);	// no initialisation of C, because it gets filled by matmult
-
     para_C = alloc_mat(d1, d3);	// no initialisation of C, because it gets filled by matmult
-	
-	
-	
+
     /* serial version of matmult */
     printf("Perform matrix multiplication...\n");
-    printf("Parallel: START\n");
+    
+	//seriell
+    printf("Seriell: START\n");
+    for (i = 0; i < d1; i++)
+       for (j = 0; j < d3; j++)
+          for (k = 0; k < d2; k++)
+             C[i][j] += A[i][k] * B[k][j];
+
+	printf("Seriell: ENDE\n");
+	//parallel
+	    printf("Parallel: START\n");
 	MPI_Init(&argc, &argv);  
     MPI_Comm_size(MPI_COMM_WORLD, &process_counter);
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -104,16 +111,12 @@ int main(int argc, char *argv[])
 	}
 	printf("Parallel: ENDE\n");
 	printf("%d\n", process_counter);
-	MPI_Finalize();
-    if
-	//seriell
-    printf("Seriell: START\n");
-    for (i = 0; i < d1; i++)
-       for (j = 0; j < d3; j++)
-          for (k = 0; k < d2; k++)
-             C[i][j] += A[i][k] * B[k][j];
-
-	printf("Seriell: ENDE\n");
+	MPI_Finalize();	
+	
+	
+	
+	
+	
 //Test
 	int error = 0;
 	for (i = 0; i < d1; i++)
@@ -127,10 +130,10 @@ int main(int argc, char *argv[])
 	printf("Fehler: %d\n", error);
 	printf("Zahlenvergleich: %d  %d  \n", p ,s);
 		/* test output */
-    print_mat(A, d1, d2, "A"); 
+    /*print_mat(A, d1, d2, "A"); 
     print_mat(B, d2, d3, "B"); 
     print_mat(C, d1, d3, "C"); 
-
+*/
     printf ("\nDone.\n");
   
       //Deinitialisiere OpenMPI
